@@ -1,3 +1,4 @@
+from sqlalchemy import create_engine
 import SleepSession
 import SleepMaths
 import NightRetriever
@@ -18,4 +19,5 @@ if __name__ == '__main__':
     #       Use SessionSummaryFactory to create a SessionSummary instance
     #       Pass in Aggregator and do the aggregation that you want, adding to instance variables in SessionSummary
     #       Save the summary by creating a SummaryStorer and passing in the engine and the SessionSummary
-    pass
+
+    engine = create_engine('mysql://hennigan:niknoseepwd@localhost/sleep_study_database')
