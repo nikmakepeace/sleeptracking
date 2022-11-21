@@ -12,4 +12,4 @@ class SleepRecord:
 
 class SleepRecordFactory:
     def create_sleep_record(self, row) -> SleepRecord:
-        return SleepRecord(1, 'night', 99, False, 55, False)
+        return SleepRecord(row[0], row[1], row[2], row[3], row[4], row[5])
