@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, run_sql
 import SleepSession
 import SleepMaths
 import NightRetriever
@@ -21,3 +21,16 @@ if __name__ == '__main__':
     #       Save the summary by creating a SummaryStorer and passing in the engine and the SessionSummary
 
     engine = create_engine('mysql://hennigan:niknoseepwd@localhost/sleep_study_database')
+    nights = run_sql('SELECT DISTINCT Night_Of FROM sleep_state ORDER BY Night_Of', engine)
+
+    for night in nights:
+        retriever = NightRetriever.NightRetriever(engine, night)
+        session = SleepSession.SleepSession(night)
+        record_factory = SleepRecord.SleepRecordFactory()
+
+        sleep_rows = retriever.fetch_sleep_records()
+
+        for row in sleep_rows:
+            record = record_factory.create_sleep_record(row)
+            sess
+

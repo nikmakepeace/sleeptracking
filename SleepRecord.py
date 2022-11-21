@@ -10,7 +10,7 @@ class SleepRecord:
         self.pulse_rate = pulse_rate
         self.pulse_rate_reminder = pulse_rate_reminder
 
-class SleepRecordFactory:
-    def createSleepRecord(row) -> SleepRecord:
-        pass
 
+class SleepRecordFactory:
+    def create_sleep_record(self, row) -> SleepRecord:
+        return SleepRecord(1, 'night', 99, False, 55, False)
