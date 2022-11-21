@@ -23,14 +23,27 @@ if __name__ == '__main__':
     engine = create_engine('mysql://hennigan:niknoseepwd@localhost/sleep_study_database')
     nights = run_sql('SELECT DISTINCT Night_Of FROM sleep_state ORDER BY Night_Of', engine)
 
+    # Get instances of the basically static factories, maths, and storers
+    summary_factory = SleepSession.SessionSummaryFactory()
+    summary_storer = SleepSession.SummaryStorer(engine)
+    record_factory = SleepRecord.SleepRecordFactory()
+    aggregator = SleepMaths.Aggregator()
+
     for night in nights:
         retriever = NightRetriever.NightRetriever(engine, night)
         session = SleepSession.SleepSession(night)
-        record_factory = SleepRecord.SleepRecordFactory()
 
         sleep_rows = retriever.fetch_sleep_records()
 
         for row in sleep_rows:
             record = record_factory.create_sleep_record(row)
-            sess
+            session.add_record(record)
 
+        # So now /session/ has all the records for the /night/ we want to create a summary
+        summary = summary_factory.create_session_summary(session)
+
+        # then you want to do whatever maths you need to
+        summary.calculate_averages(aggregator)
+
+        # and finally you want to store it
+        summary_storer.persist_summary(summary)
