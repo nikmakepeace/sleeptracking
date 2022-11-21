@@ -6,24 +6,35 @@ class SleepSession:
     """Represents a single session of sleep. Contains all the SleepRecords for that session"""
     def __init__(self, night):
         self.night = night
+        self.records = []
 
     def add_record(self, record: SleepRecord):
-        pass
+        self.records.append(record)
 
 
 class SessionSummary:
     """Represents the summary of a sleep session. Created from SleepSession data and stored"""
     def __init__(self, session: SleepSession):
         self.session = session
-        self.summary_params = ['mean_spo2', 'mean_pr', 'has_spo2_warning', 'has_pr_warning', 'has_4pc_sp02_drop', 'has_10bpm_pr_drop']
+        self.mean_spo2 = None
+        self.mean_pr = None
 
-    def calculate_average(self, param, aggregator: SleepMaths.Aggregator):
-        pass
 
     def calculate_averages(self, aggregator: SleepMaths.Aggregator):
-        for param in ['spo2', 'pr']
-            self.calculate_average(param, aggregator)
+        self._calculate_mean_spo2(aggregator)
+        self._calculate_mean_pr(aggregator)
 
+    def _calculate_mean_spo2(self, aggregator: SleepMaths.Aggregator):
+        spo2_records = []
+        for record in self.session.records:
+            spo2_records.append(record.spo2)
+        self.mean_spo2 = aggregator.mean(spo2_records)
+
+    def _calculate_mean_pr(self, aggregator: SleepMaths.Aggregator):
+        pr_records = []
+        for record in self.session.records:
+            pr_records.append(record.pulse_rate)
+        self.mean_pr = aggregator.mean(pr_records)
 class SessionSummaryFactory:
     def create_session_summary(self, session: SleepSession) -> SessionSummary:
         return SessionSummary(session)
