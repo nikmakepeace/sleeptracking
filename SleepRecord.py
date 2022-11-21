@@ -1,6 +1,5 @@
 class SleepRecord:
     """A single record from a sleep monitor"""
-
     def __init__(self, time: int, night_of: str, spo2: int, spo2_reminder: bool, pulse_rate: int,
                  pulse_rate_reminder: bool):
         self.time = time
