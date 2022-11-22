@@ -1,16 +1,19 @@
 import unittest
+import random
+import time
 
 from SleepSession import SleepSession
 from SleepRecord import SleepRecord
-from SessionSummary import SessionSummary, SessionSummaryFactory
+from SessionSummary import SessionSummary, SessionSummaryFactory, SummaryRepository
 from SleepMaths import Aggregator
+from sqlalchemy import create_engine, run_sql
 
 
 class TestSessionSummary(unittest.TestCase):
     def test_constructor(self):
         session = SleepSession('rando')
         summary = SessionSummary(session)
-        self.assertIsInstance(summary.session, SleepSession)
+        self.assertIsInstance(summary._session, SleepSession)
         self.assertIsNone(summary.mean_pr)
         self.assertIsNone(summary.mean_spo2)
 
@@ -34,3 +37,24 @@ class TestSessionSummaryFactory(unittest.TestCase):
         session = SleepSession('rando')
         summary = SessionSummaryFactory.create_session_summary(session)
         self.assertIsInstance(summary, SessionSummary)
+
+
+class TestSummaryStorer(unittest.TestCase):
+    def test_persistence(self):
+        # create a session summary, populate the fields, persist it, and then read it back and compare
+        engine = create_engine('blah di blah')
+        session = SleepSession((time.time()*33554432 % 1048575))
+        expected_summary = SessionSummaryFactory.create_session_summary(session)
+        random.seed(time.time() * 131072)
+        expected_summary.mean_pr = random.uniform(45.0, 75.0)
+        expected_summary.mean_spo2 = random.uniform(95.0, 100.0)
+        summary_repo = SummaryRepository(engine)
+        summary_repo.persist_summary(expected_summary)
+
+        # now read it back and compare (assumes session.night is unique in the DB)
+        actual_summary = summary_repo.retrieve_summary(expected_summary.name)
+        self.assertEqual(expected_summary.name, actual_summary.name)
+        self.assertEqual(expected_summary.mean_pr, actual_summary.mean_pr)
+        self.assertEqual(expected_summary.mean_spo2, actual_summary.mean_spo2)
+
+
