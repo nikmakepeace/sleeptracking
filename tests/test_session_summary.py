@@ -6,7 +6,7 @@ from sleep_session import SleepSession
 from sleep_record import SleepRecord
 from session_summary import SessionSummary, SessionSummaryFactory, SummaryRepository
 from sleep_maths import Aggregator
-from sqlalchemy import create_engine, run_sql
+from stub_sqlalchemy import create_engine, run_sql
 
 
 class TestSessionSummary(unittest.TestCase):

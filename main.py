@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, run_sql
+from stub_sqlalchemy import create_engine, run_sql
 import sleep_session
 import session_summary
 import sleep_maths

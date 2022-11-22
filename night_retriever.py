@@ -1,4 +1,4 @@
-from sqlalchemy import run_sql
+from stub_sqlalchemy import run_sql
 
 
 class NightRetriever:
