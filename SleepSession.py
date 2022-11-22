@@ -36,7 +36,8 @@ class SessionSummary:
             pr_records.append(record.pulse_rate)
         self.mean_pr = aggregator.mean(pr_records)
 class SessionSummaryFactory:
-    def create_session_summary(self, session: SleepSession) -> SessionSummary:
+    @staticmethod
+    def create_session_summary(session: SleepSession) -> SessionSummary:
         return SessionSummary(session)
 
 

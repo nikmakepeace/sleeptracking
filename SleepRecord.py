@@ -11,5 +11,6 @@ class SleepRecord:
 
 
 class SleepRecordFactory:
-    def create_sleep_record(self, row) -> SleepRecord:
+    @staticmethod
+    def create_sleep_record(row) -> SleepRecord:
         return SleepRecord(row[0], row[1], row[2], row[3], row[4], row[5])

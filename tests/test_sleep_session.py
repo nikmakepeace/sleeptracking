@@ -39,3 +39,9 @@ class TestSessionSummary(unittest.TestCase):
         summary.calculate_averages(aggregator)
         self.assertEqual(40, summary.mean_spo2)
         self.assertEqual(6, summary.mean_pr)
+
+class TestSessionSummaryFactory(unittest.TestCase):
+    def test_factory_method(self):
+        session = SleepSession('rando')
+        summary = SessionSummaryFactory.create_session_summary(session)
+        self.assertIsInstance(summary, SessionSummary)

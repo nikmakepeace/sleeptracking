@@ -17,8 +17,7 @@ class TestSleepRecord(unittest.TestCase):
 
 class TestSleepRecordFactory(unittest.TestCase):
     def test_factory_method_returns_sleep_record(self):
-        factory = SleepRecordFactory()
         row = [0, 'rando', 1, False, 2, True]
-        result = factory.create_sleep_record(row)
+        result = SleepRecordFactory.create_sleep_record(row)
         self.assertIsInstance(result, SleepRecord)
         self.assertEqual('rando', result.night_of)
