@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, run_sql
 import SleepSession
+import SessionSummary
 import SleepMaths
 import NightRetriever
 import SleepRecord
@@ -24,8 +25,8 @@ if __name__ == '__main__':
     nights = run_sql('SELECT DISTINCT Night_Of FROM sleep_state ORDER BY Night_Of', engine)
 
     # Get instances of the basically static factories, maths, and storers
-    summary_factory = SleepSession.SessionSummaryFactory()
-    summary_storer = SleepSession.SummaryStorer(engine)
+    summary_factory = SessionSummary.SessionSummaryFactory()
+    summary_storer = SessionSummary.SummaryRepository(engine)
     record_factory = SleepRecord.SleepRecordFactory()
     aggregator = SleepMaths.Aggregator()
 
@@ -44,6 +45,7 @@ if __name__ == '__main__':
 
         # then you want to do whatever maths you need to
         summary.calculate_averages(aggregator)
+        print(summary.mean_pr)
 
         # and finally you want to store it
         summary_storer.persist_summary(summary)
