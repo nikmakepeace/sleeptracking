@@ -2,10 +2,10 @@ import unittest
 import random
 import time
 
-from SleepSession import SleepSession
-from SleepRecord import SleepRecord
-from SessionSummary import SessionSummary, SessionSummaryFactory, SummaryRepository
-from SleepMaths import Aggregator
+from sleep_session import SleepSession
+from sleep_record import SleepRecord
+from session_summary import SessionSummary, SessionSummaryFactory, SummaryRepository
+from sleep_maths import Aggregator
 from sqlalchemy import create_engine, run_sql
 
 

@@ -1,4 +1,4 @@
-import SleepRecord
+from sleep_record import SleepRecord
 
 
 class SleepSession:

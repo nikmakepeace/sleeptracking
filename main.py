@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine, run_sql
-import SleepSession
-import SessionSummary
-import SleepMaths
-import NightRetriever
-import SleepRecord
+import sleep_session
+import session_summary
+import sleep_maths
+import night_retriever
+import sleep_record
 
 if __name__ == '__main__':
     # create a DB engine

@@ -1,7 +1,7 @@
 import unittest
 
-from SleepSession import SleepSession
-from SleepRecord import SleepRecord
+from sleep_session import SleepSession
+from sleep_record import SleepRecord
 
 
 class TestSleepSession(unittest.TestCase):

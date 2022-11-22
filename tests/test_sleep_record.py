@@ -1,6 +1,6 @@
 import unittest
 
-from SleepRecord import SleepRecord, SleepRecordFactory
+from sleep_record import SleepRecord, SleepRecordFactory
 
 
 class TestSleepRecord(unittest.TestCase):

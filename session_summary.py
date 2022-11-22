@@ -1,5 +1,6 @@
-import SleepMaths
-from SleepSession import SleepSession
+import sleep_maths
+from sleep_session import SleepSession
+from sleep_maths import Aggregator
 
 
 class SessionSummary:
@@ -11,17 +12,17 @@ class SessionSummary:
         self.mean_pr = None
 
 
-    def calculate_averages(self, aggregator: SleepMaths.Aggregator):
+    def calculate_averages(self, aggregator: Aggregator):
         self._calculate_mean_spo2(aggregator)
         self._calculate_mean_pr(aggregator)
 
-    def _calculate_mean_spo2(self, aggregator: SleepMaths.Aggregator):
+    def _calculate_mean_spo2(self, aggregator: Aggregator):
         spo2_records = []
         for record in self._session.records:
             spo2_records.append(record.spo2)
         self.mean_spo2 = aggregator.mean(spo2_records)
 
-    def _calculate_mean_pr(self, aggregator: SleepMaths.Aggregator):
+    def _calculate_mean_pr(self, aggregator: Aggregator):
         pr_records = []
         for record in self._session.records:
             pr_records.append(record.pulse_rate)

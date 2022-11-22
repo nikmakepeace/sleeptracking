@@ -1,6 +1,6 @@
 import unittest
 
-from SleepMaths import Aggregator
+from sleep_maths import Aggregator
 
 
 class TestAggregator(unittest.TestCase):
