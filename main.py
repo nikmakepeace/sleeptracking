@@ -23,19 +23,21 @@ if __name__ == '__main__':
     #       Pass in Aggregator and do the aggregation that you want, adding to instance variables in SessionSummary
     #       Save the summary by creating a SummaryStorer and passing in the engine and the SessionSummary
 
-    with prod_db.get_connection() as conn:
-        sql = text('SELECT DISTINCT Night_Of FROM sleep_state ORDER BY Night_Of')
-        nights = conn.execute(sql)
+    engine = prod_db.get_engine()
+    sql = text('SELECT DISTINCT Night_Of FROM sleep_data ORDER BY Night_Of')
+    with engine.connect() as conn:
+        result = conn.execute(sql)
 
         aggregator = sleep_maths.Aggregator()
 
-        for night in nights:
-            retriever = night_retriever.NightRetriever(conn, night)
+        for night_row in result:
+            night = night_row.night_of
             session = sleep_session.SleepSession(night)
+            retriever = night_retriever.NightRetriever(conn, night)
 
-            sleep_rows = retriever.fetch_sleep_records()
+            summary_repo = session_summary.SummaryRepository(conn)
 
-            for row in sleep_rows:
+            for row in retriever.fetch_sleep_records():
                 record = sleep_record.SleepRecordFactory.create_sleep_record(row)
                 session.add_record(record)
 
@@ -44,7 +46,6 @@ if __name__ == '__main__':
 
             # then you want to do whatever maths you need to
             summary.calculate_averages(aggregator)
-            print(summary.mean_pr)
 
-            # and finally you want to store it
-            session_summary.SummaryRepository.persist_summary(summary)
+            # # and finally you want to store it
+            summary_repo.persist_summary(summary)
