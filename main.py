@@ -1,4 +1,6 @@
-from stub_sqlalchemy import create_engine, run_sql
+from sqlalchemy import text
+
+import prod_db
 import sleep_session
 import session_summary
 import sleep_maths
@@ -21,31 +23,28 @@ if __name__ == '__main__':
     #       Pass in Aggregator and do the aggregation that you want, adding to instance variables in SessionSummary
     #       Save the summary by creating a SummaryStorer and passing in the engine and the SessionSummary
 
-    engine = create_engine('mysql://hennigan:niknoseepwd@localhost/sleep_study_database')
-    nights = run_sql('SELECT DISTINCT Night_Of FROM sleep_state ORDER BY Night_Of', engine)
+    with prod_db.get_connection() as conn:
+        sql = text('SELECT DISTINCT Night_Of FROM sleep_state ORDER BY Night_Of')
+        nights = conn.execute(sql)
 
-    # Get instances of the basically static factories, maths, and storers
-    summary_factory = SessionSummary.SessionSummaryFactory()
-    summary_storer = SessionSummary.SummaryRepository(engine)
-    record_factory = SleepRecord.SleepRecordFactory()
-    aggregator = SleepMaths.Aggregator()
+        aggregator = sleep_maths.Aggregator()
 
-    for night in nights:
-        retriever = NightRetriever.NightRetriever(engine, night)
-        session = SleepSession.SleepSession(night)
+        for night in nights:
+            retriever = night_retriever.NightRetriever(conn, night)
+            session = sleep_session.SleepSession(night)
 
-        sleep_rows = retriever.fetch_sleep_records()
+            sleep_rows = retriever.fetch_sleep_records()
 
-        for row in sleep_rows:
-            record = record_factory.create_sleep_record(row)
-            session.add_record(record)
+            for row in sleep_rows:
+                record = sleep_record.SleepRecordFactory.create_sleep_record(row)
+                session.add_record(record)
 
-        # So now /session/ has all the records for the /night/ we want to create a summary
-        summary = summary_factory.create_session_summary(session)
+            # So now /session/ has all the records for the /night/ we want to create a summary
+            summary = session_summary.SessionSummaryFactory.create_session_summary(session)
 
-        # then you want to do whatever maths you need to
-        summary.calculate_averages(aggregator)
-        print(summary.mean_pr)
+            # then you want to do whatever maths you need to
+            summary.calculate_averages(aggregator)
+            print(summary.mean_pr)
 
-        # and finally you want to store it
-        summary_storer.persist_summary(summary)
+            # and finally you want to store it
+            session_summary.SummaryRepository.persist_summary(summary)
