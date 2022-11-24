@@ -49,3 +49,5 @@ if __name__ == '__main__':
 
             # # and finally you want to store it
             summary_repo.persist_summary(summary)
+
+            conn.commit()

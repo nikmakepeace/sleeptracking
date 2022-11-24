@@ -1,6 +1,7 @@
 import unittest
 import random
-import time
+from datetime import datetime
+from time import time
 
 from sleep_session import SleepSession
 from sleep_record import SleepRecord
@@ -39,16 +40,22 @@ class TestSessionSummaryFactory(unittest.TestCase):
         self.assertIsInstance(summary, SessionSummary)
 
 
-class TestSummaryStorer(unittest.TestCase):
+class TestSummaryRepository(unittest.TestCase):
+    """Of very dubious value - doesn't actually test the persistence at all, just the calling of the factory methods"""
     def test_persistence(self):
         # create a session summary, populate the fields, persist it, and then read it back and compare
-        engine = create_engine('blah di blah')
-        session = SleepSession((time.time()*33554432 % 1048575))
+        now = datetime.now()
+        session = SleepSession(now)
         expected_summary = SessionSummaryFactory.create_session_summary(session)
-        random.seed(time.time() * 131072)
+
+        random.seed(time() * 131072)
         expected_summary.mean_pr = random.uniform(45.0, 75.0)
         expected_summary.mean_spo2 = random.uniform(95.0, 100.0)
-        summary_repo = SummaryRepository(engine)
+
+        engine = create_engine('ignored')
+        conn = engine.connect()
+        conn.set_result([{'name': now, 'mean_pr': expected_summary.mean_pr, 'mean_spo2': expected_summary.mean_spo2}])
+        summary_repo = SummaryRepository(conn)
         summary_repo.persist_summary(expected_summary)
 
         # now read it back and compare (assumes session.night is unique in the DB)
@@ -56,5 +63,3 @@ class TestSummaryStorer(unittest.TestCase):
         self.assertEqual(expected_summary.name, actual_summary.name)
         self.assertEqual(expected_summary.mean_pr, actual_summary.mean_pr)
         self.assertEqual(expected_summary.mean_spo2, actual_summary.mean_spo2)
-
-
