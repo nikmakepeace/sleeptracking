@@ -30,7 +30,7 @@ if '__main__' == __name__:
                 night_of = sleep_record.calculate_night_of()
                 # if there isn't a SleepSession for the night yet, make one
 
-                stmt = select(SleepSession).where(night_of == night_of)
+                stmt = select(SleepSession).where(SleepSession.night_of == night_of)
                 try:
                     sleep_session = session.scalars(stmt).one()
                 except NoResultFound:
